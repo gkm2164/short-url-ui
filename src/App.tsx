@@ -1,16 +1,20 @@
 import {useState} from 'react';
 import './App.css';
 import axios from "axios";
+import {Box, Button, TextField} from "@material-ui/core";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 function App() {
     const [id, setId] = useState("");
     const [url, setUrl] = useState("");
+    const [copied, setCopied] = useState(false);
     console.log(window.location.host);
 
     function handleSubmit() {
+        setCopied(false);
         axios.post("/", {url})
-                    .then((res) => res.data)
-                    .then((res) => setId(res.id));
+            .then((res) => res.data)
+            .then((res) => setId(res.id));
     }
 
     function recoverHostName(id: string): string {
@@ -23,15 +27,33 @@ function App() {
         }
     }
 
+    const fullUrl = recoverHostName(id);
+
     return (
         <div className="App">
-            <div>
-                URL: <input type="text" value={url} onChange={(v) => setUrl(v.target.value)}/>
-                <button onClick={() => {handleSubmit()}}>Submit</button>
-            </div>
-            <div>
-                Generated URL: <input type="text" value={recoverHostName(id)} disabled />
-            </div>
+            <Box>
+                <Box>
+                    <h1>Shorten URL</h1>
+                    <TextField id="url" label="URL" value={url}
+                               onChange={(v) => setUrl(v.target.value)}/>
+                    <Button variant="contained" color="primary" onClick={() => {
+                        handleSubmit()
+                    }}>Shorten!</Button>
+                </Box>
+                <Box>
+                    <TextField id="generatedUrl"
+                               label="Created URL"
+                               value={fullUrl}
+                               disabled/>
+                </Box>
+            </Box>
+            <Box>
+                <CopyToClipboard text={fullUrl}
+                                 onCopy={() => fullUrl !== "" ? setCopied(true) : setCopied(false)}>
+                    <Button variant="contained" color="primary">Copy to clipboard with button</Button>
+                </CopyToClipboard>
+                {copied ? "Copied" : ""}
+            </Box>
         </div>
     );
 }
