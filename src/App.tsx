@@ -1,17 +1,16 @@
 import {useState} from 'react';
 import './App.css';
 import axios from "axios";
-import {Box, Button, TextField} from "@material-ui/core";
+import {Button, Grid, TextField} from "@material-ui/core";
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 function App() {
     const [id, setId] = useState("");
     const [url, setUrl] = useState("");
-    const [copied, setCopied] = useState(false);
     console.log(window.location.host);
 
     function handleSubmit() {
-        setCopied(false);
         axios.post("/", {url})
             .then((res) => res.data)
             .then((res) => setId(res.id));
@@ -31,29 +30,45 @@ function App() {
 
     return (
         <div className="App">
-            <Box>
-                <Box>
+            <Grid container spacing={1}>
+                <Grid item xs={12}>
                     <h1>Shorten URL</h1>
-                    <TextField id="url" label="URL" value={url}
-                               onChange={(v) => setUrl(v.target.value)}/>
-                    <Button variant="contained" color="primary" onClick={() => {
-                        handleSubmit()
-                    }}>Shorten!</Button>
-                </Box>
-                <Box>
+                </Grid>
+                <Grid item xs={1}/>
+                <Grid item xs={8}>
+                    <TextField id="url"
+                               label="URL"
+                               value={url}
+                               onChange={(v) => setUrl(v.target.value)}
+                               fullWidth/>
+                </Grid>
+                <Grid item xs={2}>
+                    <Button variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                handleSubmit()
+                            }}
+                            fullWidth>Shorten!</Button>
+                </Grid>
+                <Grid item xs={1}/>
+
+                <Grid item xs={1}/>
+                <Grid item xs={8}>
                     <TextField id="generatedUrl"
                                label="Created URL"
                                value={fullUrl}
+                               fullWidth
                                disabled/>
-                </Box>
-            </Box>
-            <Box>
-                <CopyToClipboard text={fullUrl}
-                                 onCopy={() => fullUrl !== "" ? setCopied(true) : setCopied(false)}>
-                    <Button variant="contained" color="primary">Copy to clipboard with button</Button>
-                </CopyToClipboard>
-                {copied ? "Copied" : ""}
-            </Box>
+                </Grid>
+                <Grid item xs={2}>
+                    <CopyToClipboard text={fullUrl}>
+                        <Button variant="contained"
+                                color="primary"
+                                fullWidth><FileCopyIcon/></Button>
+                    </CopyToClipboard>
+                </Grid>
+                <Grid item xs={1}/>
+            </Grid>
         </div>
     );
 }
