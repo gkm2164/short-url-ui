@@ -3,10 +3,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {SnackbarProvider} from "notistack";
 
 const appRoot = document.getElementById('root');
 ReactDOM.render(
-    <App />,
+    <React.StrictMode>
+        <SnackbarProvider maxSnack={1}>
+            <App/>
+        </SnackbarProvider>
+    </React.StrictMode>,
     appRoot
 );
 

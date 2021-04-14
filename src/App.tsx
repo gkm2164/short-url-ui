@@ -4,11 +4,12 @@ import axios from "axios";
 import {Button, Grid, TextField} from "@material-ui/core";
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import {useSnackbar} from "notistack";
 
 function App() {
     const [id, setId] = useState("");
     const [url, setUrl] = useState("");
-    console.log(window.location.host);
+    const {enqueueSnackbar} = useSnackbar();
 
     function handleSubmit() {
         axios.post("/", {url})
@@ -61,13 +62,18 @@ function App() {
                                disabled/>
                 </Grid>
                 <Grid item xs={2}>
-                    <CopyToClipboard text={fullUrl}>
+                    <CopyToClipboard text={fullUrl}
+                                     onCopy={() => enqueueSnackbar("URL is copied to clipboard!")}>
                         <Button variant="contained"
                                 color="primary"
                                 fullWidth><FileCopyIcon/></Button>
                     </CopyToClipboard>
                 </Grid>
                 <Grid item xs={1}/>
+                <Grid item xs={12}>
+                    <p><b>Backend code</b>: <a href="https://gben.me/aO10hw6MEtU">https://gben.me/aO10hw6MEtU</a></p>
+                    <p><b>Frontend code</b>: <a href="https://gben.me/nz5F52HsAI5">https://gben.me/nz5F52HsAI5</a></p>
+                </Grid>
             </Grid>
         </div>
     );
